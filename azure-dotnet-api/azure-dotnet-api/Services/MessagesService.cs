@@ -1,21 +1,28 @@
 ﻿using azure_dotnet_api.Models;
+using azure_dotnet_api.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace azure_dotnet_api.Services
 {
     public class MessagesService : IMessagesService
     {
-        public IList<Message> GetMessages()
-        {
-            List<Message> messages = new();
-            messages.Add(new Message() { Id = 1, MessageBody = "First Message", DateTime = DateTime.Now });
-            messages.Add(new Message() { Id = 2, MessageBody = "Second Message", DateTime = DateTime.Now });
-            messages.Add(new Message() { Id = 3, MessageBody = "Third Message", DateTime = DateTime.Now });
-            messages.Add(new Message() { Id = 4, MessageBody = "Fourth Message", DateTime = DateTime.Now });
-            messages.Add(new Message() { Id = 5, MessageBody = "Fifth Message", DateTime = DateTime.Now });
+        private readonly IMessagesRepository _messagesRepository;
 
-            return messages;
+        public MessagesService(IMessagesRepository messagesRepository)
+        {
+            _messagesRepository = messagesRepository;
+        }
+
+        public async Task AddMessageAsync(MessageEntity message)
+        {
+            await _messagesRepository.UpsertMessage(message);
+        }
+
+        public Task<IEnumerable<MessageEntity>> GetMessages()
+        {
+            return _messagesRepository.GetMessages();
         }
     }
 }

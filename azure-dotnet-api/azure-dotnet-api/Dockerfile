@@ -1,22 +1,4 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:5.0
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
-
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
-WORKDIR /src
-COPY ["azure-dotnet-api/azure-dotnet-api.csproj", "azure-dotnet-api/"]
-RUN dotnet restore "azure-dotnet-api/azure-dotnet-api.csproj"
-COPY . .
-WORKDIR "/src/azure-dotnet-api"
-RUN dotnet build "azure-dotnet-api.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "azure-dotnet-api.csproj" -c Release -o /app/publish
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
+COPY bin/release/net5.0/publish/ ./
 ENTRYPOINT ["dotnet", "azure-dotnet-api.dll"]

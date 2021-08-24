@@ -1,9 +1,6 @@
 ﻿using azure_dotnet_api.Models;
 using azure_dotnet_api.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace azure_dotnet_api.Controllers
@@ -20,9 +17,18 @@ namespace azure_dotnet_api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Message> Get()
+        public async Task<IActionResult> GetMessages()
         {
-            return _messagesService.GetMessages();
+            return Ok(await _messagesService.GetMessages());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostMessageAsync(MessageModel message)
+        {
+            MessageEntity messageEntity = new(message.Message);
+
+            await _messagesService.AddMessageAsync(messageEntity);
+            return Ok();
         }
     }
 }

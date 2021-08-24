@@ -1,3 +1,4 @@
+using azure_dotnet_api.Repositories;
 using azure_dotnet_api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,7 @@ namespace azure_dotnet_api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IMessagesRepository, MessagesRepository>();
             services.AddScoped<IMessagesService, MessagesService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
